@@ -1,5 +1,7 @@
 package;
 
+import openfl.Assets;
+import hxluajit.LuaJIT;
 import hxluajit.wrapper.LuaUtils;
 import hxluajit.Lua;
 import sys.io.File;
@@ -8,20 +10,26 @@ import hxluajit.Types.Lua_State;
 import cpp.RawPointer;
 
 class LuaScript {
-    public static var vm:Null<RawPointer<Lua_State>> = null;
+    public static var vm:Null<RawPointer<Lua_State>> = LuaL.newstate();
 
-    public static function init(file:String) {
-        vm = LuaL.newstate();
+    public static function runFile(file:String):Void
+    {
+		Sys.println(Lua.VERSION);
+		Sys.println(LuaJIT.VERSION);
+
         LuaL.openlibs(vm);
 
-        LuaL.dofile(vm, File.getContent(file));
+        LuaUtils.doString(vm, Assets.getText(Paths.file("data/scripts/" + file + ".lua")));
 
-        LuaUtils.setVariable(vm, "version", "1.0.0");
-        LuaUtils.addFunction(vm, "trace", function (text:String) {
-            trace(text);
+        LuaUtils.addFunction(vm, 'trace', function(string:String) {
+            trace(string);
         });
 
         Lua.close(vm);
         vm = null;
-    }   
+    }
+
+    public static function callFunction(funcName:String, args:Array<Dynamic>) {
+        return LuaUtils.callFunctionByName(vm, funcName, args);
+    }
 }

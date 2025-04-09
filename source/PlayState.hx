@@ -1,6 +1,5 @@
 package;
 
-import hxluajit.wrapper.LuaUtils;
 import flixel.text.FlxText;
 import flixel.FlxState;
 
@@ -8,12 +7,23 @@ class PlayState extends FlxState {
 	override public function create() {
 		super.create();
 
-		LuaScript.init(Paths.data("scripts/main.lua"));
-		LuaUtils.callFunctionByName(LuaScript.vm, "create", []);
+		LuaScript.runFile('main');
+		luaFunctionCreate();
 	}
 
 	override public function update(elapsed:Float) {
 		super.update(elapsed);
-		LuaUtils.callFunctionByName(LuaScript.vm, "update", [elapsed]);
+
+		luaFunctionUpdate(elapsed);
+	}
+
+	function luaFunctionCreate() {
+		final create:Array<Dynamic> = LuaScript.callFunction('create', []);
+		return create;
+	}
+
+	function luaFunctionUpdate(elapsed:Float) {
+		final update:Array<Dynamic> = LuaScript.callFunction('update', [elapsed]);
+		return update;
 	}
 }
