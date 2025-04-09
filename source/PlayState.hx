@@ -8,7 +8,7 @@ class PlayState extends FlxState {
 	override public function create() {
 		super.create();
 
-		LuaScript.init("scripts/main.lua");
+		LuaScript.init(Paths.data("scripts/main.lua"));
 		LuaUtils.callFunctionByName(LuaScript.vm, "create", []);
 	}
 
