@@ -19,11 +19,11 @@ class LuaScript {
 
         LuaL.openlibs(vm);
 
-	LuaUtils.doString(vm, File.getContent(Paths.file("data/scripts/" + file + ".lua")));
-
-        LuaUtils.addFunction(vm, 'trace', function(string:String) {
+	LuaUtils.addFunction(vm, 'trace', function(string:String) {
             trace(string);
         });
+
+	LuaUtils.doString(vm, File.getContent(Paths.file("data/scripts/" + file + ".lua")));
 
         Lua.close(vm);
         vm = null;
